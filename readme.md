@@ -1,0 +1,1 @@
+Se necesitan 2 acces_key para la api de (MAPBOX para encontrar la ciudad) y para (OPENWEATHER para el clima)
