@@ -27,16 +27,30 @@ const main = async () => {
           if (listCiytId === '0') continue;
           
           const selectCity = citysName.find(city => city.id === listCiytId);
-  
+         
           // save to database
           await searhCity.historyCity(selectCity.name)
-          
+
+          // city weather
+          const weather = await searhCity.weatherCity(selectCity.lat, selectCity.lgn) 
+
+          console.log('\nInformación de la ciudad\n')
+          console.log('Ciudad:', selectCity.name)
+          console.log('Latitud:', selectCity.lat)
+          console.log('Longitud:', selectCity.lng)
+          console.log('Temperatura:', weather.temp) 
+          console.log('Min', weather.min)
+          console.log('Max', weather.max)
+          console.log('Clima de la ciudad:', weater.desc)
         break;
         
         // Show history
         case 2:
           const history = await searhCity.readDb();
-          console.log(history)
+          
+          for(let city of history) {
+             console.log(city)
+          }
         break;
     }
     

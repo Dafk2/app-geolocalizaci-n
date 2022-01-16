@@ -6,7 +6,7 @@ class SearhCity {
     pathDb = './db/data.json'     
     
     constructor() {
-      
+       this.readDb();      
     }
 
     async searchCityMethod (city = '') {
@@ -29,23 +29,55 @@ class SearhCity {
                 lat:city.center[1]
             })) 
 
-            // console.log(intace)
         } catch (err) {
-            console.log('Ningun resultado coincidio con tu busqueda') 
+            console.log('Ningún resultado coincidió con su búsqueda \nVerifica tu conexion a internet') 
         }
     }
-
-    saveDb () {
-       let file = {
-           historyFile: this.history
-       }
-
-       fs.writeFileSync(this.pathDb, JSON.stringify(file));       
+    
+    async weatherCity (lat, long) {
+        
+        try {
+            const instance = axios.create({
+                baseURL:`https://api.openweathermap.org/data/2.5/weather`,
+                params:{  
+                   appid:process.env.OPENWEATHER_KEY,
+                   units:'metric',
+                   lang:'es',
+                   lat, 
+                   long 
+                }
+            }) 
+              
+            // Here I will have the response of the request.
+            const res = await instance.get();
+              
+            const { weather, main } = res.data        
+           
+            return {
+               desc:weather[0].description,
+               min:main.temp_min,
+               max:main.temp_max,
+               temp:main.temp
+            }
+        } 
+        
+        catch (err) {
+              console.log('Internal server error')
+              console.log(err)
+        } 
     }
-
+    
+    saveDb () {
+        let file = {
+            historyFile: this.history
+        }
+        
+        fs.writeFileSync(this.pathDb, JSON.stringify(file));       
+    }
+    
     readDb () {
-       if(!fs.existsSync(this.pathDb)) {
-          return;
+        if(!fs.existsSync(this.pathDb)) {
+            return;
        }
 
        const file = fs.readFileSync(this.pathDb, { encoding: 'utf-8' })
